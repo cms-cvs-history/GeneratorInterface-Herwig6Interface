@@ -1,0 +1,22 @@
+# Herwig DataCard for H->ZZ->mumumumu
+
+source = Herwig6Source 
+{ 
+    untracked int32 maxEvents = 10
+    untracked int32 herwigVerbosity = 1
+    untracked bool herwigHepMCVerbosity = false	
+    untracked int32 maxEventsToPrint = 0	
+
+    PSet HerwigParameters = {
+	vstring parameterSets = {
+  		"herwigHZZ4mu"
+  	}
+
+	vstring herwigHZZ4mu = {
+                'RMASS(201) = 190        ! Massof the Higgs boson',
+                'IPROC      = 1611       ! Process gg -> H -> ZZ',
+                'MODBOS(1)  = 3          ! enforde first Z -> mumu',
+		'MODBOS(2)  = 3          ! enforce second Z -> mumu'
+	}	
+    }		
+}  
