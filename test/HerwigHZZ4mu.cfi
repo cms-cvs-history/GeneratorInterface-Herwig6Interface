@@ -5,7 +5,9 @@ source = Herwig6Source
     untracked int32 maxEvents = 10
     untracked int32 herwigVerbosity = 1
     untracked bool herwigHepMCVerbosity = false	
-    untracked int32 maxEventsToPrint = 0	
+    untracked int32 herwigLhapdfVerbosity = 0
+    untracked int32 maxEventsToPrint = 0
+    untracked string lhapdfSetPath = "/afs/cern.ch/sw/lcg/external/MCGenerators/lhapdf/5.2.3/share/PDFsets"	
 
     PSet HerwigParameters = {
 	vstring parameterSets = {
@@ -13,10 +15,12 @@ source = Herwig6Source
   	}
 
 	vstring herwigHZZ4mu = {
-                'RMASS(201) = 190        ! Massof the Higgs boson',
+                'RMASS(201) = 190        ! Mass of the Higgs boson',
                 'IPROC      = 1611       ! Process gg -> H -> ZZ',
                 'MODBOS(1)  = 3          ! enforde first Z -> mumu',
-		'MODBOS(2)  = 3          ! enforce second Z -> mumu'
+		'MODBOS(2)  = 3          ! enforce second Z -> mumu',
+		'MODPDF(1)  = 20060',
+		'MODPDF(2)  = 20060'
 	}	
     }		
 }  

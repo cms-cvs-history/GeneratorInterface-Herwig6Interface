@@ -1,0 +1,10 @@
+# -*- toolbox -*-
+< doc type=BuildSystem::ToolDoc version=1.0>
+< Tool name=herwig6_510 version=1.0>
+< lib name=herwig6_510>
+< lib name=dummy_herwig6_510>
+< lib name=lhapdf>
+< lib name=lhapdf_dummy>
+< use name=genser>
+< use name=f77compiler>
+< /Tool>
