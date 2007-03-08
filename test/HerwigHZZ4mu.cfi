@@ -1,15 +1,5 @@
 # Herwig DataCard for H->ZZ->mumumumu
 
-source = Herwig6Source 
-{ 
-    untracked int32 maxEvents = 10
-    untracked int32 herwigVerbosity = 0
-    untracked bool herwigHepMCVerbosity = false	
-    untracked int32 herwigLhapdfVerbosity = 0
-    untracked int32 maxEventsToPrint = 0
-    untracked string lhapdfSetPath = "/afs/cern.ch/sw/lcg/external/MCGenerators/lhapdf/5.2.3/share/PDFsets"	
-    untracked bool useJimmy = true
-
     PSet HerwigParameters = {
 	vstring parameterSets = {
   		"herwigHZZ4mu"
@@ -20,10 +10,9 @@ source = Herwig6Source
                 'IPROC      = 1611       ! Process gg -> H -> ZZ',
                 'MODBOS(1)  = 3          ! enforde first Z -> mumu',
 		'MODBOS(2)  = 3          ! enforce second Z -> mumu',
-		'MODPDF(1)  = 20060',
+		'MODPDF(1)  = 20060      ! PDF set according to LHAGLUE',
 		'MODPDF(2)  = 20060',
 		'PTJIM	    = 2.5',
 		'PTMIN      = 2.5'	
 	}	
     }		
-}  
