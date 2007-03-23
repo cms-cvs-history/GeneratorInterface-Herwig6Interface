@@ -1,7 +1,8 @@
 /*
  *  Original Author: Fabian Stoeckli 
  *  26/09/06
- * 
+ *
+ ************************* 
  */
 
 #include "GeneratorInterface/Herwig6Interface/interface/Herwig6Source.h"
