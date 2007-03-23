@@ -70,7 +70,8 @@ Herwig6Source::Herwig6Source( const ParameterSet & pset,
   lhapdfSetPath_(pset.getUntrackedParameter<string>("lhapdfSetPath","")),
   useJimmy_(pset.getUntrackedParameter<bool>("useJimmy",true)),
   doMPInteraction_(pset.getUntrackedParameter<bool>("doMPInteraction",true)),
-  printCards_(pset.getUntrackedParameter<bool>("printCards",true))
+  printCards_(pset.getUntrackedParameter<bool>("printCards",true)),
+  numTrials_(pset.getUntrackedParameter<int>("numTrialsMPI",100))
 {
   cout << "----------------------------------------------" << endl;
   cout << "Initializing Herwig6Source" << endl;
@@ -212,21 +213,33 @@ void Herwig6Source::clear() {
 
 bool Herwig6Source::produce(Event & e) {
 
-  // so far event is ok :)
-  eventstat.eventisok = 0.0;
-  
+  int counter =0;
+  double mpiok = 1.0;
 
-
-  // call herwig routines to create HEPEVT
-  hwuine();
-  hwepro();
-  hwbgen();    
-  if(useJimmy_ && doMPInteraction_) {
-    double eventok = 0.0;
-    eventok = hwmsct_dummy(1.1);
-    // if problems in MPI; skip event
-    if(eventok > 0.5) return true;
+  while(mpiok > 0.5 && counter < numTrials_) {
+    // so far event is ok :)
+    eventstat.eventisok = 0.0;  
+    
+    // call herwig routines to create HEPEVT
+    hwuine();
+    hwepro();
+    hwbgen();    
+    
+    // call jimmy ... only if event is not killed yet by HERWIG
+    if(useJimmy_ && doMPInteraction_ && (eventstat.eventisok < 0.5)) {
+      mpiok = hwmsct_dummy(1.1);
+    }
+    else mpiok = 0.0;
+    counter++;
   }
+  
+  // event after numTrials MP is not ok -> skip event
+  if(mpiok > 0.5) {
+    cout<<"   JIMMY could not produce MI in "<<numTrials_<<" trials."<<endl;
+    cout<<"   Event will be skipped to prevent from deadlock."<<endl;
+    return true;
+  }  
+  
   hwdhob();
   hwcfor();
   hwcdec();
@@ -237,14 +250,14 @@ bool Herwig6Source::produce(Event & e) {
   
   // if event was killed by HERWIG; skip 
   if(eventstat.eventisok > 0.5) return true;
-
+  
   // HEPEVT is ok, create new HepMC event
   evt = new HepMC::GenEvent();
   bool ok = conv.fill_next_event( evt );
   // if conversion failed; throw excpetion and stop processing
   if(!ok) throw cms::Exception("HerwigError")
     <<" Conversion problems in event nr."<<numberEventsInRun() - remainingEvents() - 1<<".";  
-
+  
   // set process id and event number
   evt->set_signal_process_id(hwproc.IPROC);  
   evt->set_event_number(numberEventsInRun() - remainingEvents() - 1);
