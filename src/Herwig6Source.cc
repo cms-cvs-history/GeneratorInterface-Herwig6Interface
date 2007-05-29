@@ -96,6 +96,20 @@ Herwig6Source::Herwig6Source( const ParameterSet & pset,
       cout << "   JIMMY trying to generate multiple interactions." << endl;
   }
   
+  // setting up lhapdf path name from environment varaible (***)
+  char* lhaPdfs = NULL;
+  std::cout<<"   Trying to find LHAPATH in environment ...";
+  lhaPdfs = getenv("LHAPATH");
+  if(lhaPdfs != NULL) {
+    std::cout<<" done."<<std::endl;
+    lhapdfSetPath_=std::string(lhaPdfs);
+  }
+  else
+    std::cout<<" failed."<<std::endl;
+  
+
+
+
   // Call hwudat to set up HERWIG block data
   hwudat();
   
