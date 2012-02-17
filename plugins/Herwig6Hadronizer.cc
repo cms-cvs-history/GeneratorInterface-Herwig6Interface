@@ -125,6 +125,11 @@ class Herwig6Hadronizer : public gen::BaseHadronizer,
 
         bool                            readMCatNLOfile;
 
+  // -------------------------------------------------------------------------------
+        std::string                     particleSpecFileName; //Lars 20/Jul/2011
+        bool                            readParticleSpecFile;
+  // ----------------------------------------------------------------------------
+
 };
 
 extern "C" {
@@ -146,7 +151,12 @@ Herwig6Hadronizer::Herwig6Hadronizer(const edm::ParameterSet &params) :
 	useJimmy(params.getParameter<bool>("useJimmy")),
 	doMPInteraction(params.getParameter<bool>("doMPInteraction")),
 	numTrials(params.getUntrackedParameter<int>("numTrialsMPI", 100)),
-	readMCatNLOfile(false)
+	readMCatNLOfile(false),
+
+	// added to be able to read external particle spectrum file
+	particleSpecFileName(params.getUntrackedParameter<std::string>("ParticleSpectrumFileName","")),
+	readParticleSpecFile(params.getUntrackedParameter<bool>("readParticleSpecFile", false))
+
 {
   
   fConvertToPDG = false;
@@ -353,6 +363,13 @@ bool Herwig6Hadronizer::initialize(const lhef::HEPRUP *heprup)
 
  	if (externalPartons)
 		hwproc.IPROC = -1;
+
+	//Lars: lower EFFMIN threshold, to continue execution of IPROC=4000, lambda'_211=0.01 at LM7,10
+	if( readParticleSpecFile ) {
+	  openParticleSpecFile(particleSpecFileName.c_str());
+	  hwpram.EFFMIN = 1e-5;
+	}
+	
 
 	// HERWIG preparations ...
 	call(hwuinc);

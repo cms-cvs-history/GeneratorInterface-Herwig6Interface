@@ -15,6 +15,7 @@
 
 #include <HepMC/HerwigWrapper6_4.h>
 
+#include "FWCore/ParameterSet/interface/FileInPath.h"
 #include "FWCore/Utilities/interface/Exception.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
@@ -24,6 +25,9 @@
 #include "GeneratorInterface/Herwig6Interface/interface/Herwig6Instance.h"
 
 #include "params.inc"
+
+// Added for reading in the paremeter files (orig. L. Sonnenschein)
+extern "C" void lunread_(const char filename[], const int length);
 
 using namespace gen;
 
@@ -281,3 +285,14 @@ bool Herwig6Instance::give(const std::string &line)
 
 	return true;
 }
+
+void Herwig6Instance::openParticleSpecFile(const std::string fileName) {
+
+  edm::FileInPath fileAndPath( fileName );
+  // WARING : This will call HWWARN if file does not exist.
+  lunread_( fileAndPath.fullPath().c_str(),strlen(fileAndPath.fullPath().c_str()) );
+  
+  return;
+}
+
+
